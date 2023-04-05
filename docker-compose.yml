@@ -2,7 +2,7 @@ version: '3.7'
 services:
   # 1core
   db:
-    container_name: "db"
+    container_name: "test_db"
     image: postgres:12.1-alpine
     hostname: db
     ports:
@@ -22,7 +22,7 @@ services:
             limits:
               cpus: "1"
   redis_db:
-    container_name: "redis_db"
+    container_name: "test_redis_db"
     # command: bash -c "redis-server --appendonly yes
     image: redis:latest
     hostname: redis_db
@@ -80,7 +80,7 @@ services:
 
   # "1" core
   rabbitmq:
-    container_name: "rabbitmq"
+    container_name: "test_rabbitmq"
     restart: always
     hostname: rabbitmq
     image: rabbitmq:3-management
