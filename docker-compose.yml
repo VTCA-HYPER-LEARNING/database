@@ -1,0 +1,253 @@
+version: '3.7'
+services:
+  # 1core
+  db:
+    container_name: "db"
+    image: postgres:12.1-alpine
+    hostname: db
+    ports:
+      - 9996:5432
+    volumes:
+      - ./postgres_temp:/var/lib/postgresql/data/
+      - /etc/sysctl.conf:/etc/sysctl.conf
+    environment:
+      POSTGRES_USER: 'postgres'
+      POSTGRES_PASSWORD: 'postgres'
+      POSTGRES_DB: 'brand_db'
+    networks:
+      - cluster-network
+    deploy:
+        resources:
+            limits:
+              cpus: "1"
+  redis_db:
+    container_name: "redis_db"
+    # command: bash -c "redis-server --appendonly yes
+    image: redis:latest
+    hostname: redis_db
+    ports:
+      - 6379:6379
+    volumes:
+      - ./redis_data:/data
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+  # wav2lip_api:
+  #   image: wav2lip_api
+  #   restart: always
+  #   build: ./wav2lip_api
+  #   hostname: vtcai-wav2lip
+  #   ports:
+  #     - "9994:9994"
+  #   volumes:
+  #     - /vtca/database_wav2lip/:/app/database_wav2lip
+  #   networks:
+  #     - cluster-network
+  #   deploy:
+  #     resources:
+  #         limits:
+  #           cpus: "50"
+
+  # 1core
+#   brand:
+#     image: brand_api
+#     build: ./hyperLearning_brand_api/
+#     ports:
+#         - "8001:8001"
+#     environment:
+#         VTC_MYSQL_HOST: 'db'
+#         VTC_MYSQL_PORT: '5432'
+#         POSTGRES_USER: 'postgres'
+#         POSTGRES_PASSWORD: 'postgres'
+#         POSTGRES_DB: 'brand_db'
+#     depends_on:
+#       - db
+#     healthcheck:
+#       test: ["CMD", "curl", "-f", "http://localhost:8001"]
+#       interval: 30s
+#       timeout: 10s
+#       retries: 5
+#     networks:
+#       - cluster-network
+#     links:
+#       - db
+
+#     deploy:
+#           resources:
+#               limits:
+#                 cpus: "1"
+
+  # "1" core
+  rabbitmq:
+    container_name: "rabbitmq"
+    restart: always
+    hostname: rabbitmq
+    image: rabbitmq:3-management
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+      - "9419:9419"
+    volumes:
+      - /etc/rabbitmq/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
+      - /etc/rabbitmq/advanced.config:/etc/rabbitmq/advanced.config
+    environment:  
+      RABBITMQ_HOSTNAME: 'rabbitmq'
+      RABBITMQ_DEFAULT_USER: 'guest'
+      RABBITMQ_DEFAULT_PASS: 'guest'
+      RABBITMQ_DEFAULT_VHOST: '/'
+
+    healthcheck:
+        test: ["CMD", "curl", "-f", "http://localhost:15672"]
+        interval: 30s
+        timeout: 10s
+        retries: 5
+
+    deploy:
+          resources:
+              limits:
+                cpus: "2"
+                memory: "1024M"
+
+#   # 2 core
+#   core_api:
+#     image: core_api
+#     restart: always
+#     build: ./main_api/
+#     hostname: vtcai-engine
+#     volumes:
+#       - /vtca/database_wav2lip/:/app/database_wav2lip
+#     container_name: "core-api-container"
+#     ports:
+#       - "9991:9991"
+#     networks:
+#       - cluster-network
+#     depends_on:
+#       - rabbitmq
+#     healthcheck:
+#       test: ["CMD", "curl", "-f", "http://localhost:9997"]
+#       interval: 30s
+#       timeout: 10s
+#       retries: 5
+#     environment:
+#         VTC_MYSQL_HOST: 'db'
+#         VTC_MYSQL_PORT: '5432'
+#         POSTGRES_USER: 'vtca'
+#         POSTGRES_PASSWORD: 'Vtca12390350d44-4910-11ed-9e5a-0242c0a84009'
+#         POSTGRES_DB: 'vtca_db'
+
+#     deploy:
+#           resources:
+#               limits:
+#                 cpus: "50"
+
+#   # "1" core
+#   users:
+#         image: vtca_users
+#         build: ./API_authentication/users
+#         ports:
+#           - 9992:9992
+#         environment:
+#             VTC_MYSQL_HOST: 'db'
+#             VTC_MYSQL_PORT: '5432'
+#             POSTGRES_USER: 'vtca'
+#             POSTGRES_PASSWORD: 'Vtca12390350d44-4910-11ed-9e5a-0242c0a84009'
+#             POSTGRES_DB: 'vtca_db'
+#         depends_on:
+#           - db
+#         networks:
+#           - cluster-network
+#         # command: sh -c "uvicorn main:app --host 0.0.0.0 --port 8001"
+#         healthcheck:
+#             test: ["CMD", "curl", "-f", "http://localhost:9992"]
+#             interval: 30s
+#             timeout: 10s
+#             retries: 5
+
+#         deploy:
+#               resources:
+#                   limits:
+#                     cpus: "1"
+
+#   # frontend
+#   frontend:
+#     image: frontend_ui
+#     restart: always
+#     build: ./hyperLearning_frontend/
+#     container_name: "frontend-container"
+#     ports:
+#       - "9995:80"
+#     networks:
+#       - cluster-network
+#     deploy:
+#           resources:
+#               limits:
+#                 cpus: "0.5"
+#   # "1" core
+#   text2speech_api:
+#     image: text2speech_api
+#     restart: always
+#     build: ./text2speech_api/
+#     container_name: "text2speech-api-container"
+#     volumes:
+#       - /vtca/database_wav2lip/:/app/database_wav2lip
+#     ports:
+#       - "9999:9999"
+#     networks:
+#       - cluster-network
+
+#     deploy:
+#           resources:
+#               limits:
+#                 cpus: "1"
+
+#   embed_video_api:
+#     image: embed_video_api
+#     restart: always
+#     build: ./embed_API/
+#     container_name: "embed-video-api-container"
+#     volumes:
+#       - /vtca/database_wav2lip/:/app/database_wav2lip
+#     ports:
+#       - "9993:9993"
+#     networks:
+#       - cluster-network
+
+#     deploy:
+#           resources:
+#               limits:
+#                 cpus: "50"
+
+#   # "1" core
+#   gateway:
+#     image: vtca_gateway
+#     build: ./API_authentication/gateway
+#     hostname: vtcai-gateway
+#     volumes:
+#       - /vtca/database_wav2lip/:/gateway/database_wav2lip
+#     environment:
+#       USERS_SERVICE_URL: http://users:9992
+#       WAV2LIP_SERVICE_URL: http://core_api:9991
+#       ACCESS_TOKEN_DEFAULT_EXPIRE_MINUTES: 360000
+#       GATEWAY_TIMEOUT: 360000
+#     ports:
+#       - 9997:9997
+#     networks:
+#       - cluster-network
+#     depends_on:
+#       - users
+#     healthcheck:
+#         test: ["CMD", "curl", "-f", "http://localhost:9991"]
+#         interval: 30s
+#         timeout: 10s
+#         retries: 5
+
+#     deploy:
+#           resources:
+#               limits:
+#                 cpus: "1"
+
+# volumes:
+#   rabbitmqdata:
+
+networks:
+  cluster-network:
+    driver: bridge
