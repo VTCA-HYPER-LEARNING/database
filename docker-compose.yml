@@ -6,7 +6,7 @@ services:
     image: postgres:12.1-alpine
     hostname: db
     ports:
-      - 9996:5432
+      - 8880:5432
     restart: always
     volumes:
       - ./postgres_temp:/var/lib/postgresql/data/
@@ -27,7 +27,7 @@ services:
     image: redis:latest
     hostname: redis_db
     ports:
-      - 6379:6379
+      - 8881:6379
     restart: always
     volumes:
       - ./redis_data:/data
@@ -85,9 +85,9 @@ services:
     hostname: rabbitmq
     image: rabbitmq:3-management
     ports:
-      - "15672:15672"
-      - "5672:5672"
-      - "9419:9419"
+      - "8882:15672"
+      - "8885:5672"
+      - "8884:9419"
     restart: always
     volumes:
       - /etc/rabbitmq/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
