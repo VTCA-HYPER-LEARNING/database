@@ -26,5 +26,5 @@ jobs:
           username: ${{ secrets.VM_USERNAME }}
           port: ${{ secrets.VM_PORT_SSH }}
           password: ${{ secrets.VM_PASSWORD }}
-        script: |
-          docker compose up --build -d
+          script: |
+            docker compose up --build -d
