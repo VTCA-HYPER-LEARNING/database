@@ -45,7 +45,7 @@ jobs:
           port: ${{ secrets.VM_PORT_SSH }}
           password: ${{ secrets.VM_PASSWORD }}
           script: |
-            ../../docker-compose up --build
+            docker-compose -f docker-compose.yml up --build
       
       - name: Verify
         run: echo ${{ steps.buildx.digest }}
