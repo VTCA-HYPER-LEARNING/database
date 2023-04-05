@@ -19,6 +19,12 @@ jobs:
         name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
-      - name: Build and run containers
-        run: |
+      - name: 'Deploy to vm'
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.VM_HOST }}
+          username: ${{ secrets.VM_USERNAME }}
+          port: ${{ secrets.VM_PORT_SSH }}
+          password: ${{ secrets.VM_PASSWORD }}
+        script: |
           docker compose up --build -d
