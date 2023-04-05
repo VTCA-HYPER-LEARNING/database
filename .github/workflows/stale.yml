@@ -20,5 +20,6 @@ jobs:
     steps:
       - name: 'Deploy to vm'
         uses: appleboy/ssh-action@master
-        script: |
-          docker-compose up --build
+        with:
+          script: |
+            docker-compose up --build
