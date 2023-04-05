@@ -13,8 +13,10 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Set up Docker Compose
-      uses: docker/compose-action@1.2.0
+    - name: Set up Docker
+      uses: docker/setup-docker@v2.6.0
+      with:
+        compose-version: '2.0.0'
 
     - name: Build and run containers
       run: |
