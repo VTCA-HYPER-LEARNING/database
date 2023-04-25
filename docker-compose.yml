@@ -2,11 +2,11 @@ version: '3.7'
 services:
   # 1core
   test_db:
-    container_name: "test_db"
+    container_name: "db"
     image: postgres:12.1-alpine
     hostname: test_db
     ports:
-      - 8880:5432
+      - 5432:5432
     restart: always
     volumes:
       - ./postgres_temp:/var/lib/postgresql/data/
@@ -22,12 +22,12 @@ services:
             limits:
               cpus: "1"
   test_redis_db:
-    container_name: "test_redis_db"
+    container_name: "redis_db"
     # command: bash -c "redis-server --appendonly yes
     image: redis:latest
-    hostname: test_redis_db
+    hostname: redis_db
     ports:
-      - 8881:6379
+      - 6379:6379
     restart: always
     volumes:
       - ./redis_data:/data
@@ -80,14 +80,14 @@ services:
 
   # "1" core
   test_rabbitmq:
-    container_name: "test_rabbitmq"
+    container_name: "rabbitmq"
     restart: always
-    hostname: test_rabbitmq
+    hostname: rabbitmq
     image: rabbitmq:3-management
     ports:
-      - "8882:15672"
-      - "8885:5672"
-      - "8884:9419"
+      - "15672:15672"
+      - "5672:5672"
+      - "9419:9419"
     restart: always
     volumes:
       - /etc/rabbitmq/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
