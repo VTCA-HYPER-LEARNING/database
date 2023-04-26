@@ -27,4 +27,4 @@ jobs:
           port: ${{ secrets.VM_PORT_SSH }}
           password: ${{ secrets.VM_PASSWORD }}
           script: |
-            docker-compose -f /home/vtcai/chanhhuy/project/STAGGING/database/docker-compose.yml up --build -d
+            docker-compose -f /home/vtcai/chanhhuy/project/STAGGING/docker-compose.yml up --build -d
